@@ -31,6 +31,8 @@
 *.out
 *.app
 
-build/
+*.ini
 CMakeUserPresets.json
+
+build/
 bindings/
