@@ -15,7 +15,7 @@ bool App::setup()
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 0);
-    
+
     SDL_SetHint(SDL_HINT_IME_SHOW_UI, "1");
 
     // Create window with graphics context
@@ -57,9 +57,9 @@ void App::update()
     ImGui_ImplOpenGL3_NewFrame();
     ImGui_ImplSDL2_NewFrame();
     ImGui::NewFrame();
-    
+
     display();
-    
+
     ImGui::Render();
     ImGuiIO& io = ImGui::GetIO(); (void)io;
     glViewport(0, 0, (int)io.DisplaySize.x, (int)io.DisplaySize.y);
@@ -82,8 +82,16 @@ void App::close()
 
 void App::display()
 {
-    if (show_demo_window)
-        ImGui::ShowDemoWindow(&show_demo_window);
+  if (show_demo_window){
+    ImGui::Begin("test");
+    if(ImGui::CollapsingHeader("test?")){
+        ImGui::SeparatorText("Test!");
+        ImGui::Text("hiii");
+    }
+    ImGui::End();
+  }
+  receiver.display();
+
 }
 
 void App::process_events()
@@ -97,4 +105,3 @@ void App::process_events()
             wants_to_close = true;
     }
 }
-

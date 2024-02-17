@@ -1,5 +1,6 @@
 #pragma once
 
+#include "receiver.h"
 #include "imgui.h"
 #include "imgui_impl_sdl2.h"
 #include "imgui_impl_opengl3.h"
@@ -14,6 +15,7 @@ public:
   void update();
   void process_events();
   bool wants_to_close = false;
+  NetworkReceiver receiver;
 private:
   void display();
   SDL_GLContext gl_context;

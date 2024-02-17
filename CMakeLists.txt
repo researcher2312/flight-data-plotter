@@ -10,6 +10,7 @@ find_package(SDL2 REQUIRED)
 set(SOURCES
     src/main.cpp
     src/app.cpp
+    src/receiver.cpp
     bindings/imgui_impl_sdl2.cpp
     bindings/imgui_impl_opengl3.cpp
 )
