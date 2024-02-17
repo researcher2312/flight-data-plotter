@@ -9,8 +9,8 @@ find_package(SDL2 REQUIRED)
 
 set(SOURCES
     src/main.cpp
-    src/imgui_impl_sdl2.cpp
-    src/imgui_impl_opengl3.cpp
+    bindings/imgui_impl_sdl2.cpp
+    bindings/imgui_impl_opengl3.cpp
 )
 
 add_executable(${PROJECT_NAME} ${SOURCES})
@@ -22,4 +22,5 @@ target_include_directories(${PROJECT_NAME} PRIVATE ${CONAN_LIBS})
 target_include_directories(${PROJECT_NAME}
     PRIVATE
         ${PROJECT_SOURCE_DIR}/inc
+        ${PROJECT_SOURCE_DIR}/bindings
 )
