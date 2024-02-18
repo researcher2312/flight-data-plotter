@@ -6,9 +6,9 @@
 
 struct SensorDataFrame{
   float time;
-  float acceleration;
-  float rotation;
-  float magnetic;
+  std::array<float, 3> acceleration;
+  std::array<float, 3> rotation;
+  std::array<float, 3> magnetic;
 };
 
 class Graph {
@@ -16,6 +16,8 @@ class Graph {
   void display();
   void add_point(SensorDataFrame new_data);
  private:
-  std::array<std::vector<float>, 3> sensor_data;
+  std::array<std::vector<float>, 3> acceleration;
+  std::array<std::vector<float>, 3> rotation;
+  std::array<std::vector<float>, 3> magnetic;
 };
 
