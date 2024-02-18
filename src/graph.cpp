@@ -1,4 +1,5 @@
 #include "graph.h"
+#include "implot.h"
 #include <cmath>
 
 void Graph::display()
@@ -11,9 +12,12 @@ void Graph::display()
     data.magnetic = std::fmod(ImGui::GetTime(), 5.0);
     add_point(data);    
   }
-  ImGui::PlotLines("Acceleration", sensor_data.at(0).data(), sensor_data.at(0).size(), 0, NULL, 0.0f, 5.0f, ImVec2(0, 80.0f));
-  ImGui::PlotLines("Rotation", sensor_data.at(1).data(), sensor_data.at(1).size(), 0, NULL, 0.0f, 5.0f, ImVec2(0, 80.0f));
-  ImGui::PlotLines("Magnetic", sensor_data.at(2).data(), sensor_data.at(2).size(), 0, NULL, 0.0f, 5.0f, ImVec2(0, 80.0f));
+  
+  ImPlot::BeginPlot("Flight Data");
+  ImPlot::PlotLine("Acceleration", sensor_data.at(0).data(), sensor_data.at(0).size());
+  ImPlot::PlotLine("Rotation", sensor_data.at(1).data(), sensor_data.at(1).size());
+  ImPlot::PlotLine("Magnetic", sensor_data.at(2).data(), sensor_data.at(2).size());
+  ImPlot::EndPlot();
 }
 
 void Graph::add_point(SensorDataFrame new_data)
