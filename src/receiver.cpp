@@ -7,5 +7,8 @@ void NetworkReceiver::display()
     ImGui::Text("connected");
   else
     ImGui::Text("not connected");
+  if(ImGui::Button("Connect")){
+    is_connected = !is_connected;
+  }
   ImGui::End();
 }

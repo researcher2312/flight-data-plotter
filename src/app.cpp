@@ -91,7 +91,7 @@ void App::display()
     ImGui::End();
   }
   receiver.display();
-
+  graph.display();
 }
 
 void App::process_events()

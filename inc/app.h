@@ -1,6 +1,7 @@
 #pragma once
 
 #include "receiver.h"
+#include "graph.h"
 #include "imgui.h"
 #include "imgui_impl_sdl2.h"
 #include "imgui_impl_opengl3.h"
@@ -16,6 +17,7 @@ public:
   void process_events();
   bool wants_to_close = false;
   NetworkReceiver receiver;
+  Graph graph;
 private:
   void display();
   SDL_GLContext gl_context;
