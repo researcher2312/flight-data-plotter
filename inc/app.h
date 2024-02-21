@@ -1,28 +1,22 @@
 #pragma once
 
-#include "receiver.h"
-#include "graph.h"
-#include "imgui.h"
-#include "implot.h"
-#include "imgui_impl_sdl2.h"
-#include "imgui_impl_opengl3.h"
+#include <list>
 #include <SDL.h>
 #include <SDL_opengl.h>
-
+#include "imgui.h"
+#include "windows.h"
 
 class App {
 public:
-  bool setup();
-  void close();
-  void update();
-  void process_events();
-  bool wants_to_close = false;
-  NetworkReceiver receiver;
-  Graph graph;
+    bool setup();
+    void close();
+    void update();
+    void process_events();
+    bool wants_to_close = false;
 private:
-  void display();
-  SDL_GLContext gl_context;
-  SDL_Window* window;
-  ImVec4 clear_color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
+    void display();
+    SDL_GLContext gl_context;
+    SDL_Window* window;
+    GlobalWindow main_window;
+    ImVec4 clear_color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
 };
-

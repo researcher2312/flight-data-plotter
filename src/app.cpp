@@ -1,10 +1,12 @@
+#include "imgui_impl_sdl2.h"
+#include "imgui_impl_opengl3.h"
+#include "implot.h"
 #include "app.h"
 
 bool App::setup()
 {
-      // Setup SDL
-    if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_TIMER | SDL_INIT_GAMECONTROLLER) != 0)
-    {
+    // Setup SDL
+    if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_TIMER | SDL_INIT_GAMECONTROLLER) != 0) {
         printf("Error: %s\n", SDL_GetError());
         return false;
     }
@@ -23,9 +25,8 @@ bool App::setup()
     SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 24);
     SDL_GL_SetAttribute(SDL_GL_STENCIL_SIZE, 8);
     SDL_WindowFlags window_flags = (SDL_WindowFlags)(SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE | SDL_WINDOW_ALLOW_HIGHDPI);
-    window = SDL_CreateWindow("Flight Data Plotter", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 1280, 720, window_flags);
-    if (window == nullptr)
-    {
+    window = SDL_CreateWindow("Flight Data Plotter", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 1920, 1080, window_flags);
+    if (window == nullptr) {
         printf("Error: SDL_CreateWindow(): %s\n", SDL_GetError());
         return false;
     }
@@ -84,8 +85,7 @@ void App::close()
 
 void App::display()
 {
-  receiver.display();
-  graph.display();
+  main_window.display();
 }
 
 void App::process_events()
