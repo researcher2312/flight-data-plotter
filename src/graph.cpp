@@ -6,45 +6,51 @@
 
 void Graph::display()
 {
-    ImGui::Begin("Graph");
-    if(ImGui::Button("Add point")) {
+    while(refresh_time < ImGui::GetTime()) {
         SensorDataFrame data;
-        data.acceleration = std::array<double, 3>{std::fmod(ImGui::GetTime(), 3.0), std::fmod(ImGui::GetTime(), 4.0), std::fmod(ImGui::GetTime(), 5.0)};
-        data.rotation = std::array<double, 3>{std::fmod(ImGui::GetTime(), 7.0), std::fmod(ImGui::GetTime(), 2.0), std::fmod(ImGui::GetTime(), 3.0)};
-        data.magnetic = std::array<double, 3>{std::fmod(ImGui::GetTime(), 5.0), std::fmod(ImGui::GetTime(), 3.0), std::fmod(ImGui::GetTime(), 4.0)};
-        add_point(data);
+        data.acceleration = std::array<double, 3>{distribution(generator), distribution(generator), distribution(generator)};
+        data.rotation = std::array<double, 3>{distribution(generator), distribution(generator), distribution(generator)};
+        data.magnetic = std::array<double, 3>{distribution(generator), distribution(generator), distribution(generator)};
+        add_point(data, ImGui::GetTime());
+        refresh_time += 1.0 / 20.0;
     }
+
+    static float history = 5.0f;
     
     ImPlot::BeginPlot("Acceleration");
     ImPlot::SetupAxes("t(s)", "a(m/s²)");
-    ImPlot::PlotLine("x", acceleration.at(0).data(), acceleration.at(0).size());
-    ImPlot::PlotLine("y", acceleration.at(1).data(), acceleration.at(1).size());
-    ImPlot::PlotLine("z", acceleration.at(2).data(), acceleration.at(2).size());
+    ImPlot::SetupAxisLimits(ImAxis_X1, ImGui::GetTime() - history, ImGui::GetTime(), ImGuiCond_Always);
+    ImPlot::SetupAxisLimits(ImAxis_Y1, 0, 6);
+    ImPlot::PlotLine("x", &acceleration.at(0).Data[0].x, &acceleration.at(0).Data[0].y, acceleration.at(0).Data.size(), 0, acceleration.at(0).Offset, 2*sizeof(float));
+    ImPlot::PlotLine("y", &acceleration.at(1).Data[0].x, &acceleration.at(1).Data[0].y, acceleration.at(1).Data.size(), 0, acceleration.at(1).Offset, 2*sizeof(float));
+    ImPlot::PlotLine("z", &acceleration.at(2).Data[0].x, &acceleration.at(2).Data[0].y, acceleration.at(2).Data.size(), 0, acceleration.at(2).Offset, 2*sizeof(float));
     ImPlot::EndPlot();
 
     ImPlot::BeginPlot("Rotation");
     ImPlot::SetupAxes("t(s)", "r(1/s)");
-    ImPlot::PlotLine("x", rotation.at(0).data(), rotation.at(0).size());
-    ImPlot::PlotLine("y", rotation.at(1).data(), rotation.at(1).size());
-    ImPlot::PlotLine("z", rotation.at(2).data(), rotation.at(2).size());
+    ImPlot::SetupAxisLimits(ImAxis_X1, ImGui::GetTime() - history, ImGui::GetTime(), ImGuiCond_Always);
+    ImPlot::SetupAxisLimits(ImAxis_Y1, 0, 6);
+    ImPlot::PlotLine("x", &rotation.at(0).Data[0].x, &rotation.at(0).Data[0].y, rotation.at(0).Data.size(), 0, rotation.at(0).Offset, 2*sizeof(float));
+    ImPlot::PlotLine("y", &rotation.at(1).Data[0].x, &rotation.at(1).Data[0].y, rotation.at(1).Data.size(), 0, rotation.at(1).Offset, 2*sizeof(float));
+    ImPlot::PlotLine("z", &rotation.at(2).Data[0].x, &rotation.at(2).Data[0].y, rotation.at(2).Data.size(), 0, rotation.at(2).Offset, 2*sizeof(float));
     ImPlot::EndPlot();
 
     ImPlot::BeginPlot("Magnetic");
     ImPlot::SetupAxes("t(s)", "M(H)");
-    ImPlot::PlotLine("x", magnetic.at(0).data(), magnetic.at(0).size());
-    ImPlot::PlotLine("y", magnetic.at(1).data(), magnetic.at(1).size());
-    ImPlot::PlotLine("z", magnetic.at(2).data(), magnetic.at(2).size());
+    ImPlot::SetupAxisLimits(ImAxis_X1, ImGui::GetTime() - history, ImGui::GetTime(), ImGuiCond_Always);
+    ImPlot::SetupAxisLimits(ImAxis_Y1, 0, 6);
+    ImPlot::PlotLine("x", &magnetic.at(0).Data[0].x, &magnetic.at(0).Data[0].y, magnetic.at(0).Data.size(), 0, magnetic.at(0).Offset, 2*sizeof(float));
+    ImPlot::PlotLine("y", &magnetic.at(1).Data[0].x, &magnetic.at(1).Data[0].y, magnetic.at(1).Data.size(), 0, magnetic.at(1).Offset, 2*sizeof(float));
+    ImPlot::PlotLine("z", &magnetic.at(2).Data[0].x, &magnetic.at(2).Data[0].y, magnetic.at(2).Data.size(), 0, magnetic.at(2).Offset, 2*sizeof(float));
     ImPlot::EndPlot();
-
-    ImGui::End();
 }
 
-void Graph::add_point(SensorDataFrame new_data)
+void Graph::add_point(SensorDataFrame& new_data, double time)
 {
     for (int i=0; i<3; ++i) {
-        acceleration.at(i).push_back(new_data.acceleration.at(i));
-        rotation.at(i).push_back(new_data.rotation.at(i));
-        magnetic.at(i).push_back(new_data.magnetic.at(i));
+        acceleration.at(i).AddPoint(time, new_data.acceleration.at(i));
+        rotation.at(i).AddPoint(time, new_data.rotation.at(i));
+        magnetic.at(i).AddPoint(time, new_data.magnetic.at(i));
     }
 }
 
