@@ -83,9 +83,15 @@ void App::close()
     SDL_Quit();
 }
 
+void App::add_window(GlobalWindow* new_window)
+{
+    main_window = new_window;
+}
+
+
 void App::display()
 {
-  main_window.display();
+  main_window->display();
 }
 
 void App::process_events()

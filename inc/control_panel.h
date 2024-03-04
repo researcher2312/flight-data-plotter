@@ -1,6 +1,8 @@
 #pragma once
 
-class ControlPanel {
+#include "windows.h"
+
+class ControlPanel: public UIWidget {
 public:
-    void display();
+    virtual void display();
 };

@@ -1,7 +1,9 @@
 #pragma once
 
-class NetworkReceiver{
+#include "windows.h"
+
+class NetworkReceiver: public UIWidget {
 public:
-    void display();
+    virtual void display();
     bool is_connected = false;
 };

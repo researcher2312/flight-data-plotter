@@ -1,14 +1,16 @@
 #pragma once
 
-#include "receiver.h"
-#include "graph.h"
-#include "control_panel.h"
+#include <array>
+
+class UIWidget {
+public:
+    virtual void display() = 0;
+};
 
 class GlobalWindow {
 public:
+    GlobalWindow(std::array<UIWidget*, 3> widgets);
     void display();
 private:
-    NetworkReceiver receiver;
-    Graph graph;
-    ControlPanel panel;
+    std::array<UIWidget*, 3> widgets;
 };

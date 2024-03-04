@@ -12,11 +12,12 @@ public:
     void close();
     void update();
     void process_events();
+    void add_window(GlobalWindow* window);
     bool wants_to_close = false;
 private:
     void display();
     SDL_GLContext gl_context;
     SDL_Window* window;
-    GlobalWindow main_window;
+    GlobalWindow* main_window;
     ImVec4 clear_color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
 };

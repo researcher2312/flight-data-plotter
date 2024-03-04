@@ -36,3 +36,4 @@ CMakeUserPresets.json
 
 build/
 bindings/
+.vscode/
