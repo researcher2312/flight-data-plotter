@@ -43,3 +43,90 @@ Feel free to contribute by submitting bug reports, feature requests, or pull req
 
 ## License
 This Flight Data Plotter is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+```mermaid
+classDiagram 
+
+class App {
+  - window_list
+  - window
+  - context
+  + setup()
+  + process_events()
+  + update()
+  + close()
+}
+
+class UIWidget {
+    <<interface>>
+    + print()
+}
+
+class GlobalWindow {
+  - widget_list
+  + add_widget()
+  + display()
+}
+
+class SensorData {
+  + time
+  + acceleration
+  + rotation
+  + magnetic
+}
+
+class NetworkReceiver {
+  - availabale_devices
+  - connected_device
+  - awaiting_data
+  - socket
+  + print ()
+  - discover_devices()
+  - connect()
+  - load_data()
+}
+
+class Graph {
+  - recording
+  - data_queue
+  - acceleration: vector
+  - rotation: vector
+  - magnetic: vector
+  + print()
+  + start_recording()
+  + stop_recording()
+  + add_point()
+  + clear_graph()
+}
+
+class Visualisation {
+  - model
+  - background
+  - orientation
+}
+
+class ControlPanel {
+  + print()
+}
+
+class MadgFilter {
+  + currentData
+  + previousData
+  + filter()
+}
+
+
+App *-- GlobalWindow
+GlobalWindow -- Visualisation
+GlobalWindow -- NetworkReceiver
+GlobalWindow -- Graph
+GlobalWindow -- ControlPanel
+
+UIWidget --> NetworkReceiver
+UIWidget --> ControlPanel
+UIWidget --> Graph
+
+Graph "1" *-- "0..*" SensorData
+
+MadgFilter -- NetworkReceiver
+```
