@@ -16,6 +16,9 @@ void Graph::display()
     }
 
     static float history = 5.0f;
+    static ImPlotSubplotFlags sub_flags = ImPlotSubplotFlags_LinkRows;
+
+    ImPlot::BeginSubplots("test", 3, 1, ImVec2(-1,-1), sub_flags);
     
     ImPlot::BeginPlot("Acceleration");
     ImPlot::SetupAxes("t(s)", "a(m/s²)");
@@ -43,6 +46,8 @@ void Graph::display()
     ImPlot::PlotLine("y", &magnetic.at(1).Data[0].x, &magnetic.at(1).Data[0].y, magnetic.at(1).Data.size(), 0, magnetic.at(1).Offset, 2*sizeof(float));
     ImPlot::PlotLine("z", &magnetic.at(2).Data[0].x, &magnetic.at(2).Data[0].y, magnetic.at(2).Data.size(), 0, magnetic.at(2).Offset, 2*sizeof(float));
     ImPlot::EndPlot();
+
+    ImPlot::EndSubplots();
 }
 
 void Graph::add_point(SensorDataFrame& new_data, double time)

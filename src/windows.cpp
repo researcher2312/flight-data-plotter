@@ -16,20 +16,25 @@ void GlobalWindow::display()
     ImGui::SetNextWindowSize(viewport->Size);
 
     ImGui::Begin("Window", &open_window, flags);
-    ImGui::BeginTable("window_table", 2);
     
-    ImGui::TableNextRow();
-    ImGui::TableSetColumnIndex(0);
-    widgets.at(0)->display();
-    
-    ImGui::TableSetColumnIndex(1);
-    widgets.at(1)->display();
-    
-    ImGui::TableNextRow();
-    ImGui::TableSetColumnIndex(0);
-    widgets.at(2)->display();
+    ImGui::BeginTable("main_table", 2);
+    {
+        ImGui::TableNextRow();
+        ImGui::TableSetColumnIndex(0);
+        ImGui::BeginTable("inside_table", 1);
+        {
+            ImGui::TableNextRow();
+            ImGui::TableSetColumnIndex(0);
+            widgets.at(0)->display();
+            ImGui::TableNextRow();
+            ImGui::TableSetColumnIndex(0);
+            widgets.at(2)->display();
+        }
+        ImGui::EndTable();
 
-    
+        ImGui::TableSetColumnIndex(1);
+        widgets.at(1)->display();
+    }
     ImGui::EndTable();
     
     ImGui::End();
