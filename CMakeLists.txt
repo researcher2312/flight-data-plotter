@@ -6,6 +6,7 @@ project(flight-data-plotter VERSION 0.1 LANGUAGES CXX)
 find_package(implot REQUIRED)
 find_package(imgui REQUIRED)
 find_package(SDL2 REQUIRED)
+find_package(sdbus-c++ REQUIRED)
 
 set(SOURCES
     src/main.cpp
@@ -21,7 +22,7 @@ set(SOURCES
 add_executable(${PROJECT_NAME} ${SOURCES})
 target_compile_features(${PROJECT_NAME} PRIVATE cxx_std_17)
 
-target_link_libraries(${PROJECT_NAME} PRIVATE implot::implot imgui::imgui SDL2::SDL2main)
+target_link_libraries(${PROJECT_NAME} PRIVATE implot::implot imgui::imgui SDL2::SDL2main SDBusCpp::sdbus-c++)
 target_include_directories(${PROJECT_NAME} PRIVATE ${CONAN_LIBS})
 
 target_include_directories(${PROJECT_NAME}
