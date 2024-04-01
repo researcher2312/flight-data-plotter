@@ -6,27 +6,34 @@
 #include <sdbus-c++/sdbus-c++.h>
 #include "windows.h"
 
+namespace DBUSAddress {
+    const std::string wireless_enabled {"WirelessEnabled"};
+    const std::string service_networkmanager {"org.freedesktop.NetworkManager"};
+    const std::string networkmanager_path {"/org/freedesktop/NetworkManager"};
+    const std::string interface_properties {"org.freedesktop.DBus.Properties"};
+}
 
 class NetworkManagerDBUSProxy {
 public:
     NetworkManagerDBUSProxy();
-    bool wireless_enabled();
+    bool read_wireless_status();
+    std::string error_name {};
 private:
-    void read_wireless_status(const sdbus::Error* error, uint32_t status);
-    const std::string SERVICE_NETWORKMANAGER {"org.freedesktop.NetworkManager"};
-    const std::string NETWORKMANAGER_PATH {"/org/freedesktop/NetworkManager"};
-    const std::string INTERFACE_PROPERTIES {"org.freedesktop.DBus.Properties"};
-    bool wireless_is_enabled;
-    std::unique_ptr<sdbus::IProxy> dbus_proxy;
+    bool future_finished();
+    void set_future();
+    bool wireless_enabled;
+    std::future<sdbus::Variant> m_call_result;
+    std::unique_ptr<sdbus::IProxy> m_dbus_proxy;
 };
 
 class NetworkReceiver: public UIWidget {
 public:
     NetworkReceiver();
     virtual void display();
-    std::string get_connected_network_name();
-    std::vector<std::string> get_network_names();
+    bool wireless_enabled();
+    //std::string get_connected_network_name();
+    //std::vector<std::string> get_network_names();
+private:
     NetworkManagerDBUSProxy network_dbus_proxy;
-    bool is_connected;
 };
 

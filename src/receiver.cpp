@@ -1,59 +1,90 @@
+#include <iostream>
+#include <chrono>
 #include "imgui.h"
 #include "receiver.h"
 
 
 NetworkManagerDBUSProxy::NetworkManagerDBUSProxy()
 {
-    dbus_proxy = sdbus::createProxy(SERVICE_NETWORKMANAGER, NETWORKMANAGER_PATH);
+    m_dbus_proxy = sdbus::createProxy(DBUSAddress::service_networkmanager, DBUSAddress::networkmanager_path);
 }
 
-bool NetworkManagerDBUSProxy::wireless_enabled()
+bool NetworkManagerDBUSProxy::future_finished()
 {
-    const std::string WIRELESS_ENABLED {"WirelessEnabled"};
-
-    dbus_proxy->callMethodAsync("Get")
-    .onInterface(INTERFACE_PROPERTIES)
-    .withArguments(SERVICE_NETWORKMANAGER, WIRELESS_ENABLED)
-    .uponReplyInvoke([this](const sdbus::Error* error, uint32_t status){read_wireless_status(error, status);});
-
-    return wireless_is_enabled;
+    if (m_call_result.wait_for(std::chrono::seconds(0)) == std::future_status::ready)
+        return true;
+    else
+        return false;
 }
 
-void NetworkManagerDBUSProxy::read_wireless_status(const sdbus::Error* error, uint32_t status)
+void NetworkManagerDBUSProxy::set_future()
 {
-    wireless_is_enabled = static_cast<bool>(status);
+    m_call_result = m_dbus_proxy->getPropertyAsync(DBUSAddress::wireless_enabled)
+                                    .onInterface(DBUSAddress::service_networkmanager)
+                                    .getResultAsFuture();
 }
 
+
+bool NetworkManagerDBUSProxy::read_wireless_status()
+{
+    if (m_call_result.valid()) {
+        if (future_finished()) {
+            wireless_enabled = m_call_result.get().get<bool>();
+            set_future();
+        }
+    }
+    else {
+        set_future();
+    }
+
+    return wireless_enabled;
+}
 
 NetworkReceiver::NetworkReceiver()
 {
-    is_connected = network_dbus_proxy.wireless_enabled();
+    //is_connected = network_dbus_proxy.wireless_enabled();
+}
+
+bool NetworkReceiver::wireless_enabled()
+{
+    bool result = false;
+    try {
+        if (network_dbus_proxy.read_wireless_status())
+            result = true;
+    }
+    catch(sdbus::Error& error) {
+        std::cerr << "ERR: on scanAndConnect(): " << error.getName() << " with message " << error.getMessage() << std::endl;
+    }
+    return result;
 }
 
 void NetworkReceiver::display()
 {
-    if (network_dbus_proxy.wireless_enabled())
-        ImGui::Text("Wireless enabled");
-    else
-        ImGui::Text("Wireless disabled");
-    if (is_connected)
+    // std::string answer;
+    // if (network_dbus_proxy.wireless_enabled()) {
+    //     answer = "enabled";
+    // }
+    // else {
+    //     answer = "disabled";
+    // }
+    // //std::string answer = "Wireless error: " + network_dbus_proxy.error_name;
+    // ImGui::Text(answer.c_str());
+
+    if (wireless_enabled())
         ImGui::Text("connected");
     else
         ImGui::Text("not connected");
-    if (ImGui::Button("Connect")){
-        is_connected = !is_connected;
-    }
 }
 
-std::vector<std::string> NetworkReceiver::get_network_names()
-{
-    ;
-}
+// std::vector<std::string> NetworkReceiver::get_network_names()
+// {
+//     ;
+// }
 
-std::string NetworkReceiverget_connected_network_name()
-{
-    ;
-}
+// std::string NetworkReceiverget_connected_network_name()
+// {
+//     ;
+// }
 
 
 //('org.freedesktop.NetworkManager.AccessPoint', 'Ssid')
