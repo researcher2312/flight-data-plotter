@@ -27,10 +27,10 @@ namespace DBUSProperty {
     const std::string active_access_point {"ActiveAccessPoint"};
 }
 
-class NetworkManagerFastDBUSPROXY {
+class NetworkManagerDBUSProxy {
 public:
-    NetworkManagerFastDBUSPROXY() = default;
-    NetworkManagerFastDBUSPROXY(sdbus::ObjectPath path_to_device);
+    NetworkManagerDBUSProxy() = default;
+    NetworkManagerDBUSProxy(sdbus::ObjectPath path_to_device);
     template<class T>
     T read_parameter(std::string interface_name, std::string property_name);
     std::string read_type(std::string interface_name, std::string property_name);
@@ -46,7 +46,7 @@ public:
     std::string network_name();
     sdbus::ObjectPath get_wireless_device_path();
 private:
-    NetworkManagerFastDBUSPROXY m_networkmanager_proxy;
-    NetworkManagerFastDBUSPROXY m_wireless_device_proxy;
-    NetworkManagerFastDBUSPROXY m_settings_proxy;
+    NetworkManagerDBUSProxy m_networkmanager_proxy;
+    NetworkManagerDBUSProxy m_wireless_device_proxy;
+    NetworkManagerDBUSProxy m_settings_proxy;
 };
