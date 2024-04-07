@@ -1,6 +1,7 @@
 #include <iostream>
 #include "network_proxy.h"
 
+
 NetworkManagerFastDBUSPROXY::NetworkManagerFastDBUSPROXY(sdbus::ObjectPath path_to_device)
 {
     m_dbus_proxy = sdbus::createProxy(DBUSInterface::networkmanager, path_to_device);
@@ -28,20 +29,6 @@ std::string NetworkManagerFastDBUSPROXY::read_type(std::string interface_name, s
     return result.peekValueType();
 }
 
-template<class T>
-std::vector<T> NetworkManagerFastDBUSPROXY::read_parameter_array(std::string interface_name, std::string property_name)
-{
-    std::vector<T> result;
-    try {
-        result = m_dbus_proxy->getProperty(property_name)
-                                .onInterface(interface_name);
-    }
-    catch (sdbus::Error& error) {
-        std::cerr << "ERR: " << error.getName() << " with message " << error.getMessage() << std::endl;
-    }
-    return result;
-}
-
 NetworkManagerProxy::NetworkManagerProxy()
 {
     m_networkmanager_proxy = NetworkManagerFastDBUSPROXY(DBUSPath::networkmanager);
@@ -52,7 +39,7 @@ NetworkManagerProxy::NetworkManagerProxy()
 sdbus::ObjectPath NetworkManagerProxy::get_wireless_device_path()
 {
     sdbus::ObjectPath result;
-    auto devices = m_networkmanager_proxy.read_parameter_array<sdbus::ObjectPath>(DBUSInterface::networkmanager, DBUSProperty::devices);
+    auto devices = m_networkmanager_proxy.read_parameter<std::vector<sdbus::ObjectPath>>(DBUSInterface::networkmanager, DBUSProperty::devices);
     for (auto& device: devices) {
         auto proxy = NetworkManagerFastDBUSPROXY(device);
         auto type = proxy.read_parameter<uint32_t>(DBUSInterface::device, DBUSProperty::device_type);
@@ -72,7 +59,7 @@ std::string NetworkManagerProxy::network_name()
 {
     auto device = m_wireless_device_proxy.read_parameter<sdbus::ObjectPath>(DBUSInterface::device_wireless, DBUSProperty::active_access_point);
     NetworkManagerFastDBUSPROXY proxy {device};
-    auto reading = proxy.read_parameter_array<uint8_t>(DBUSInterface::access_point, DBUSProperty::ssid);
+    auto reading = proxy.read_parameter<std::vector<uint8_t>>(DBUSInterface::access_point, DBUSProperty::ssid);
     return std::string(reading.begin(), reading.end());
 }
 

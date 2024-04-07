@@ -33,8 +33,6 @@ public:
     NetworkManagerFastDBUSPROXY(sdbus::ObjectPath path_to_device);
     template<class T>
     T read_parameter(std::string interface_name, std::string property_name);
-    template<class T>
-    std::vector<T> read_parameter_array(std::string interface_name, std::string property_name);
     std::string read_type(std::string interface_name, std::string property_name);
 private:
     std::shared_ptr<sdbus::IProxy> m_dbus_proxy;
