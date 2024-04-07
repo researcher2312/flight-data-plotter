@@ -3,13 +3,38 @@
 #include "imgui.h"
 #include "receiver.h"
 
+DeviceDBUSProxy::DeviceDBUSProxy()
+{
+    //m_dbus_proxy = sdbus::createProxy(DBUSAddress::service_networkmanager, DBUSAddress::device_path);
+    m_ssid = DBUSRequest<std::string>(m_dbus_proxy, DBUSAddress::service_device, DBUSAddress::ssid);
+}
 
 NetworkManagerDBUSProxy::NetworkManagerDBUSProxy()
 {
     m_dbus_proxy = sdbus::createProxy(DBUSAddress::service_networkmanager, DBUSAddress::networkmanager_path);
+    m_wireless_enabled = DBUSRequest<bool>(m_dbus_proxy, DBUSAddress::service_networkmanager, DBUSAddress::wireless_enabled);
 }
 
-bool NetworkManagerDBUSProxy::future_finished()
+bool NetworkManagerDBUSProxy::wireless_is_enabled()
+{
+    return m_wireless_enabled.get_value();
+}
+
+std::string DeviceDBUSProxy::ssid()
+{
+    return m_ssid.get_value();
+}
+
+template<class T>
+DBUSRequest<T>::DBUSRequest(std::shared_ptr<sdbus::IProxy> proxy, std::string interface_name, std::string property_name)
+{
+    m_proxy = proxy;
+    m_interface_name = interface_name;
+    m_property_name = property_name;
+}
+
+template<class T>
+bool DBUSRequest<T>::future_finished()
 {
     if (m_call_result.wait_for(std::chrono::seconds(0)) == std::future_status::ready)
         return true;
@@ -17,75 +42,46 @@ bool NetworkManagerDBUSProxy::future_finished()
         return false;
 }
 
-void NetworkManagerDBUSProxy::set_future()
+template<class T>
+void DBUSRequest<T>::set_future()
 {
-    m_call_result = m_dbus_proxy->getPropertyAsync(DBUSAddress::wireless_enabled)
-                                    .onInterface(DBUSAddress::service_networkmanager)
+    m_call_result = m_proxy->getPropertyAsync(m_property_name)
+                                    .onInterface(m_interface_name)
                                     .getResultAsFuture();
+    
 }
 
-
-bool NetworkManagerDBUSProxy::read_wireless_status()
-{
-    if (m_call_result.valid()) {
-        if (future_finished()) {
-            wireless_enabled = m_call_result.get().get<bool>();
+template<class T>
+T DBUSRequest<T>::get_value()
+{   
+    try {
+        if (m_call_result.valid()) {
+            if (future_finished()) {
+                result = m_call_result.get().get<T>();
+                set_future();
+            }
+        }
+        else {
             set_future();
         }
     }
-    else {
-        set_future();
+    catch (sdbus::Error& error) {
+        std::cerr << "ERR: " << error.getName() << " with message " << error.getMessage() << std::endl;
     }
 
-    return wireless_enabled;
-}
-
-NetworkReceiver::NetworkReceiver()
-{
-    //is_connected = network_dbus_proxy.wireless_enabled();
-}
-
-bool NetworkReceiver::wireless_enabled()
-{
-    bool result = false;
-    try {
-        if (network_dbus_proxy.read_wireless_status())
-            result = true;
-    }
-    catch(sdbus::Error& error) {
-        std::cerr << "ERR: on scanAndConnect(): " << error.getName() << " with message " << error.getMessage() << std::endl;
-    }
     return result;
 }
 
 void NetworkReceiver::display()
 {
-    // std::string answer;
-    // if (network_dbus_proxy.wireless_enabled()) {
-    //     answer = "enabled";
-    // }
-    // else {
-    //     answer = "disabled";
-    // }
-    // //std::string answer = "Wireless error: " + network_dbus_proxy.error_name;
-    // ImGui::Text(answer.c_str());
+    std::string hostname = "hostname: " + network_proxy.hostname();
+    std::string ssid = "Ssid: " + network_proxy.network_name();
+    ImGui::Text(hostname.c_str());
+    ImGui::Text(ssid.c_str());
 
-    if (wireless_enabled())
-        ImGui::Text("connected");
+    if (network_proxy.wireless_enabled())
+        ImGui::Text("Wireless connected");
     else
-        ImGui::Text("not connected");
+        ImGui::Text("Wireless not connected");
+    // network_proxy.register_wireless_devices();
 }
-
-// std::vector<std::string> NetworkReceiver::get_network_names()
-// {
-//     ;
-// }
-
-// std::string NetworkReceiverget_connected_network_name()
-// {
-//     ;
-// }
-
-
-//('org.freedesktop.NetworkManager.AccessPoint', 'Ssid')
-//('org.freedesktop.NetworkManager', 'WirelessEnabled')
