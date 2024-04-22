@@ -7,6 +7,7 @@ find_package(implot REQUIRED)
 find_package(imgui REQUIRED)
 find_package(SDL2 REQUIRED)
 find_package(sdbus-c++ REQUIRED)
+find_package(asio REQUIRED)
 
 set(SOURCES
     src/main.cpp
@@ -14,6 +15,7 @@ set(SOURCES
     src/receiver.cpp
     src/graph.cpp
     src/control_panel.cpp
+    src/client.cpp
     src/windows.cpp
     src/network_proxy.cpp
     bindings/imgui_impl_sdl2.cpp
@@ -23,7 +25,7 @@ set(SOURCES
 add_executable(${PROJECT_NAME} ${SOURCES})
 target_compile_features(${PROJECT_NAME} PRIVATE cxx_std_17)
 
-target_link_libraries(${PROJECT_NAME} PRIVATE implot::implot imgui::imgui SDL2::SDL2main SDBusCpp::sdbus-c++)
+target_link_libraries(${PROJECT_NAME} PRIVATE implot::implot imgui::imgui SDL2::SDL2main SDBusCpp::sdbus-c++ asio::asio)
 target_include_directories(${PROJECT_NAME} PRIVATE ${CONAN_LIBS})
 
 target_include_directories(${PROJECT_NAME}

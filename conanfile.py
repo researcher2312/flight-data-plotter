@@ -14,6 +14,7 @@ class FlightDataPlotter(ConanFile):
         self.requires("implot/0.16")
         self.requires("sdl/2.28.5")
         self.requires("sdbus-cpp/1.5.0")
+        self.requires("asio/1.29.0")
 
     def generate(self):
         copy(self, "*sdl2*", os.path.join(self.dependencies["imgui"].package_folder,

@@ -1,4 +1,5 @@
 #include <iostream>
+#include <exception>
 #include "network_proxy.h"
 
 
@@ -17,6 +18,9 @@ T NetworkManagerDBUSProxy::read_parameter(std::string interface_name, std::strin
                                 .get<T>();
     }
     catch (sdbus::Error& error) {
+        if (error.getName() == DBUSError::unknown_method) {
+            std::rethrow_exception(std::current_exception());
+        }
         std::cerr << "ERR: " << error.getName() << " with message " << error.getMessage() << std::endl;
     }
     return result;
@@ -33,6 +37,11 @@ NetworkManagerProxy::NetworkManagerProxy()
 {
     m_networkmanager_proxy = NetworkManagerDBUSProxy(DBUSPath::networkmanager);
     m_settings_proxy = NetworkManagerDBUSProxy(DBUSPath::settings);
+    set_wireless_device();
+}
+
+void NetworkManagerProxy::set_wireless_device()
+{
     m_wireless_device_proxy = NetworkManagerDBUSProxy(get_wireless_device_path());
 }
 
@@ -44,7 +53,7 @@ sdbus::ObjectPath NetworkManagerProxy::get_wireless_device_path()
         NetworkManagerDBUSProxy proxy {device};
         auto type = proxy.read_parameter<uint32_t>(DBUSInterface::device, DBUSProperty::device_type);
         if (type == 2) {
-            result =  device;
+            result = device;
         }
     }
     return result;
@@ -57,9 +66,18 @@ std::string NetworkManagerProxy::hostname()
 
 std::string NetworkManagerProxy::network_name()
 {
+    std::vector<uint8_t> reading;
     auto device = m_wireless_device_proxy.read_parameter<sdbus::ObjectPath>(DBUSInterface::device_wireless, DBUSProperty::active_access_point);
     NetworkManagerDBUSProxy proxy {device};
-    auto reading = proxy.read_parameter<std::vector<uint8_t>>(DBUSInterface::access_point, DBUSProperty::ssid);
+    try{
+        reading = proxy.read_parameter<std::vector<uint8_t>>(DBUSInterface::access_point, DBUSProperty::ssid);
+    }
+    catch (sdbus::Error& error) {
+        if (wireless_enabled()) {
+            set_wireless_device();
+        }
+        return "Not connected";
+    }
     return std::string(reading.begin(), reading.end());
 }
 

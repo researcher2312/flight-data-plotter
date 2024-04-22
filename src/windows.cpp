@@ -6,7 +6,6 @@ GlobalWindow::GlobalWindow(std::array<UIWidget*, 3> new_widgets)
     widgets = new_widgets;
 }
 
-
 void GlobalWindow::display()
 {
     static bool open_window = true;

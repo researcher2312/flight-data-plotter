@@ -27,6 +27,10 @@ namespace DBUSProperty {
     const std::string active_access_point {"ActiveAccessPoint"};
 }
 
+namespace DBUSError {
+    const std::string unknown_method {"org.freedesktop.DBus.Error.UnknownMethod"};
+}
+
 class NetworkManagerDBUSProxy {
 public:
     NetworkManagerDBUSProxy() = default;
@@ -44,8 +48,9 @@ public:
     bool wireless_enabled();
     std::string hostname();
     std::string network_name();
-    sdbus::ObjectPath get_wireless_device_path();
 private:
+    sdbus::ObjectPath get_wireless_device_path();
+    void set_wireless_device();
     NetworkManagerDBUSProxy m_networkmanager_proxy;
     NetworkManagerDBUSProxy m_wireless_device_proxy;
     NetworkManagerDBUSProxy m_settings_proxy;

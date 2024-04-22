@@ -50,4 +50,3 @@ private:
     std::array<ScrollingBuffer, 3> rotation;
     std::array<ScrollingBuffer, 3> magnetic;
 };
-
