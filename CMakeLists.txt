@@ -2,7 +2,6 @@ cmake_minimum_required(VERSION 3.10)
 
 project(flight-data-plotter VERSION 0.1 LANGUAGES CXX)
 
-
 find_package(implot REQUIRED)
 find_package(imgui REQUIRED)
 find_package(SDL2 REQUIRED)

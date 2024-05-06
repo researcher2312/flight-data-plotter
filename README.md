@@ -21,21 +21,23 @@ The Flight Data Plotter is a C++ program utilizing ImGui and ImPlot libraries to
 2. Install dependencies using Conan.
 
 ```bash
-conan install .
+conan install . --output-folder=build --build=missing
 ```
+for a debug version you can add `--settings=build_type=Debug`
 
 3. Configure and build the project with CMake.
 
 ```bash
-mkdir build && cd build
-cmake ..
-make
+cmake --preset conan-release
+cmake --build --preset conan-release
 ```
+
+for a debug version you can use `conan-debug`
 
 4. Run the executable.
 
 ```bash
-./flight_data_plotter
+./build/Release/flight_data_plotter
 ```
 
 ## Contributing
