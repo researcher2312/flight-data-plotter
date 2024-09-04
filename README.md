@@ -21,7 +21,7 @@ The Flight Data Plotter is a C++ program utilizing ImGui and ImPlot libraries to
 2. Install dependencies using Conan.
 
 ```bash
-conan install . --output-folder=build --build=missing
+conan install . --build=missing
 ```
 for a debug version you can add `--settings=build_type=Debug`
 
