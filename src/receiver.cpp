@@ -26,8 +26,8 @@ void NetworkReceiver::display()
     }
     std::string hostname = "hostname: " + m_hostname;
     std::string ssid = "Ssid: " + m_ssid;
-    ImGui::Text(hostname.c_str());
-    ImGui::Text(ssid.c_str());
+    ImGui::Text("%s", hostname.c_str());
+    ImGui::Text("%s", ssid.c_str());
 
     if (m_wireles_enabled)
         ImGui::Text("Wireless connected");

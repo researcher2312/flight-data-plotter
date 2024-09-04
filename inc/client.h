@@ -14,11 +14,12 @@ public:
     void start_accept();
     void handle_accept();
     void handle_read(std::size_t bytes_transferred);
+    void set_options();
 
 private:
     tcp::acceptor acceptor_;
     tcp::socket socket_;
-    asio::streambuf receive_buffer_;
+    std::array<char, sizeof(float)> receive_buffer;
 };
 
 class DataClient {
@@ -27,5 +28,5 @@ public:
     ~DataClient();
 private:
     asio::io_context io_context;
-    AsyncServer server {io_context, 8080};
+    AsyncServer server {io_context, 1234};
 };
