@@ -5,7 +5,8 @@
 
 using asio::ip::udp;
 
-constexpr size_t DATA_SIZE = sizeof(float);
+constexpr size_t DATA_NUM = 11;
+constexpr size_t DATA_SIZE = DATA_NUM * sizeof(float);
 
 class AsyncServer {
 public:

@@ -20,10 +20,11 @@ void AsyncServer::do_receive()
 
 void AsyncServer::handle_read()
 {
-    float received_value;
-    std::memcpy(&received_value, data_.data(), sizeof(float));
+    std::array<float, DATA_NUM> received_floats;
+    //std::memcpy(&received_value, data_.data(), sizeof(float));
+    std::memcpy(received_floats.data(), data_.data(), DATA_SIZE);
 
-    std::cerr << "Received float value: " << received_value << std::endl;
+    std::cerr << "Received float value: " << received_floats[0] << ' ' << received_floats[1] << std::endl;
 
     std::fill(data_.begin(), data_.end(), 0);
 }
