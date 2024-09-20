@@ -28,14 +28,42 @@ struct SensorData {
 }
 
 class NetworkReceiver {
-  - availabale_devices
-  - connected_device
-  - awaiting_data
+  + display()
+  - update_data()
+  - hostname
+  - ssid
+  - wireless_enabled
+  - networkmanager_proxy
+  - data_client
+}
+
+class NetworkManagerProxy {
+  + wireless_enabled()
+  + hostname()
+  + network_name()
+  - get_wireless_device_path()
+  - set_wireless_device()
+  - networkmanager_proxy
+  - wireless_device_proxy
+  - settings_proxy
+}
+
+class NetworkManagerDBUSProxy {
+  + read_parameter()
+  + read_type()
+  - dbus_proxy
+}
+
+class AsyncServer {
+  + do_receive()
+  + handle_read()
   - socket
-  + print ()
-  - discover_devices()
-  - connect()
-  - load_data()
+  - data
+}
+
+class DataClient {
+  - io_context
+  - server
 }
 
 class Graph {
@@ -72,6 +100,11 @@ GlobalWindow -- Visualisation
 GlobalWindow -- NetworkReceiver
 GlobalWindow -- Graph
 GlobalWindow -- ControlPanel
+
+NetworkReceiver -- NetworkManagerProxy
+NetworkReceiver -- DataClient
+DataClient -- AsyncServer
+NetworkManagerProxy -- NetworkManagerDBUSProxy
 
 UIWidget --> NetworkReceiver
 UIWidget --> ControlPanel
