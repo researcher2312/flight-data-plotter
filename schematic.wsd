@@ -69,14 +69,18 @@ class DataClient {
 class Graph {
   - recording
   - data_queue
-  - acceleration: vector
-  - rotation: vector
-  - magnetic: vector
   + print()
   + start_recording()
   + stop_recording()
-  + add_point()
   + clear_graph()
+}
+
+class DataStorage {
+  - acceleration: vector
+  - rotation: vector
+  - magnetic: vector
+  + add_point()
+  + export()
 }
 
 class Visualisation {
@@ -87,6 +91,11 @@ class Visualisation {
 
 class ControlPanel {
   + print()
+  + send_message()
+}
+
+class Controller {
+  + send_message()
 }
 
 class MadgFilter {
@@ -95,21 +104,25 @@ class MadgFilter {
   + filter()
 }
 
-App *-- GlobalWindow
-GlobalWindow -- Visualisation
-GlobalWindow -- NetworkReceiver
-GlobalWindow -- Graph
-GlobalWindow -- ControlPanel
+App --> GlobalWindow
 
-NetworkReceiver -- NetworkManagerProxy
-NetworkReceiver -- DataClient
-DataClient -- AsyncServer
-NetworkManagerProxy -- NetworkManagerDBUSProxy
+GlobalWindow --> Visualisation
+GlobalWindow --> NetworkReceiver
+GlobalWindow --> Graph
+GlobalWindow --> ControlPanel
 
-UIWidget --> NetworkReceiver
-UIWidget --> ControlPanel
-UIWidget --> Graph
+NetworkReceiver --* NetworkManagerProxy
+NetworkReceiver --* DataClient
+DataClient --* AsyncServer
+NetworkManagerProxy --* NetworkManagerDBUSProxy
 
-Graph "1" *-- "0..*" SensorData
+UIWidget --|> NetworkReceiver
+UIWidget --|> ControlPanel
+UIWidget --|> Graph
 
-MadgFilter -- NetworkReceiver
+DataStorage "1" --* "0..*" SensorData
+Graph --> DataStorage
+NetworkReceiver --> DataStorage
+DataStorage --> MadgFilter
+
+ControlPanel --> Controller

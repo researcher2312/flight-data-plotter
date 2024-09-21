@@ -7,14 +7,12 @@ The Flight Data Plotter is a C++ program utilizing ImGui and ImPlot libraries to
 - **Interactive Interface**: Powered by ImGui, the program offers a sleek and interactive user interface.
 - **Real-time Plotting**: ImPlot enables real-time plotting of flight data, ensuring up-to-date visualizations.
 - **Customizable Plots**: Users can customize plots by selecting parameters, adjusting colors, and configuring plot settings.
-- **Data Import**: Easily import flight data files in common formats for seamless analysis.
+- **Data Export**: Easily export flight data files in common formats for seamless analysis.
 
 ## Requirements
 - C++ compiler with C++11 support
 - Conan package manager
 - CMake
-- ImGui library (https://github.com/ocornut/imgui)
-- ImPlot library (https://github.com/epezent/implot)
 
 ## Getting Started
 1. Clone the repository.
@@ -47,7 +45,11 @@ Feel free to contribute by submitting bug reports, feature requests, or pull req
 This Flight Data Plotter is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
 ```mermaid
-classDiagram 
+classDiagram
+
+class UIWidget {
+  + print()
+}
 
 class App {
   - window_list
@@ -57,11 +59,6 @@ class App {
   + process_events()
   + update()
   + close()
-}
-
-class UIWidget {
-    <<interface>>
-    + print()
 }
 
 class GlobalWindow {
@@ -78,27 +75,59 @@ class SensorData {
 }
 
 class NetworkReceiver {
-  - availabale_devices
-  - connected_device
-  - awaiting_data
+  + display()
+  - update_data()
+  - hostname
+  - ssid
+  - wireless_enabled
+  - networkmanager_proxy
+  - data_client
+}
+
+class NetworkManagerProxy {
+  + wireless_enabled()
+  + hostname()
+  + network_name()
+  - get_wireless_device_path()
+  - set_wireless_device()
+  - networkmanager_proxy
+  - wireless_device_proxy
+  - settings_proxy
+}
+
+class NetworkManagerDBUSProxy {
+  + read_parameter()
+  + read_type()
+  - dbus_proxy
+}
+
+class AsyncServer {
+  + do_receive()
+  + handle_read()
   - socket
-  + print ()
-  - discover_devices()
-  - connect()
-  - load_data()
+  - data
+}
+
+class DataClient {
+  - io_context
+  - server
 }
 
 class Graph {
   - recording
   - data_queue
-  - acceleration: vector
-  - rotation: vector
-  - magnetic: vector
   + print()
   + start_recording()
   + stop_recording()
-  + add_point()
   + clear_graph()
+}
+
+class DataStorage {
+  - acceleration: vector
+  - rotation: vector
+  - magnetic: vector
+  + add_point()
+  + export()
 }
 
 class Visualisation {
@@ -109,6 +138,11 @@ class Visualisation {
 
 class ControlPanel {
   + print()
+  + send_message()
+}
+
+class Controller {
+  + send_message()
 }
 
 class MadgFilter {
@@ -117,18 +151,26 @@ class MadgFilter {
   + filter()
 }
 
+App --> GlobalWindow
 
-App *-- GlobalWindow
-GlobalWindow -- Visualisation
-GlobalWindow -- NetworkReceiver
-GlobalWindow -- Graph
-GlobalWindow -- ControlPanel
+GlobalWindow --> Visualisation
+GlobalWindow --> NetworkReceiver
+GlobalWindow --> Graph
+GlobalWindow --> ControlPanel
 
-UIWidget --> NetworkReceiver
-UIWidget --> ControlPanel
-UIWidget --> Graph
+NetworkReceiver --* NetworkManagerProxy
+NetworkReceiver --* DataClient
+DataClient --* AsyncServer
+NetworkManagerProxy --* NetworkManagerDBUSProxy
 
-Graph "1" *-- "0..*" SensorData
+UIWidget --|> NetworkReceiver
+UIWidget --|> ControlPanel
+UIWidget --|> Graph
 
-MadgFilter -- NetworkReceiver
+DataStorage "1" --* "0..*" SensorData
+Graph --> DataStorage
+NetworkReceiver --> DataStorage
+DataStorage --> MadgFilter
+
+ControlPanel --> Controller
 ```
