@@ -1,5 +1,6 @@
 #pragma once
 
+#include "data_storage.h"
 #include <thread>
 #include <asio.hpp>
 
@@ -14,6 +15,7 @@ public:
         socket_(io_context, udp::endpoint(udp::v4(), port))
         {do_receive();}
 
+    DataStorage* data_storage;
     void do_receive();
     void handle_read();
 
@@ -24,7 +26,7 @@ private:
 
 class DataClient {
 public:
-    DataClient();
+    DataClient(DataStorage*);
     ~DataClient();
 private:
     asio::io_context io_context;

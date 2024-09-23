@@ -27,17 +27,19 @@ void AsyncServer::handle_read()
     float time_frame = 0;
 
     std::memcpy(&time_frame, data_.data(), sizeof(float));
-    std::memcpy(acceleration.data(), data_.data()+2*sizeof(float), 3*sizeof(float));
-    std::memcpy(rotation.data(), data_.data()+5*sizeof(float), 3*sizeof(float));
-    std::memcpy(magnetic.data(), data_.data()+8*sizeof(float), 3*sizeof(float));
+    std::memcpy(acceleration.data(), data_.data()+1*sizeof(float), 3*sizeof(float));
+    std::memcpy(rotation.data(), data_.data()+4*sizeof(float), 3*sizeof(float));
+    std::memcpy(magnetic.data(), data_.data()+7*sizeof(float), 3*sizeof(float));
 
+    data_storage->add_point(time_frame, acceleration, rotation, magnetic);
     std::cerr << "Received float value: " << time_frame << std::endl;
 
     std::fill(data_.begin(), data_.end(), 0);
 }
 
-DataClient::DataClient()
+DataClient::DataClient(DataStorage* data_storage)
 {
+    server.data_storage = data_storage;
     std::cerr << "Server started. Waiting for incoming connections..." << std::endl;
     try {
         std::thread io_thread([&]() {

@@ -44,7 +44,8 @@ struct ScrollingBuffer {
 class DataStorage {
 public:
     void generate_random_data();
-    void add_point(float time, std::array<float, 3>, std::array<float, 3>, std::array<float, 3>);
+    void add_point(float time, std::array<float, 3> acceleration, std::array<float, 3> rotation, std::array<float, 3> magnetic);
+    float get_highest_time();
     std::array<ScrollingBuffer, 3> acceleration;
     std::array<ScrollingBuffer, 3> rotation;
     std::array<ScrollingBuffer, 3> magnetic;

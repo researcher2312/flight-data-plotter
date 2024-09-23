@@ -3,6 +3,16 @@
 #include "imgui.h"
 #include "receiver.h"
 
+NetworkReceiver::NetworkReceiver(DataStorage* data)
+{
+    m_data_client = new DataClient(data);
+}
+
+NetworkReceiver::~NetworkReceiver()
+{
+    delete m_data_client;
+}
+
 
 void NetworkReceiver::update_data()
 {

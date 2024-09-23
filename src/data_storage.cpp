@@ -12,11 +12,18 @@ void DataStorage::add_point(float time,
     }
 }
 
-
 void DataStorage::generate_random_data()
 {
     auto acceleration = std::array<float, 3>{distribution(generator), distribution(generator), distribution(generator)};
     auto rotation = std::array<float, 3>{distribution(generator), distribution(generator), distribution(generator)};
     auto magnetic = std::array<float, 3>{distribution(generator), distribution(generator), distribution(generator)};
     add_point(ImGui::GetTime(), acceleration, rotation, magnetic);
+}
+
+float DataStorage::get_highest_time()
+{
+    if (acceleration.size() > 0) {
+        return acceleration.at(0).Data.back().x;
+    }
+    return 0.0;
 }

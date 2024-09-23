@@ -10,7 +10,8 @@
 class NetworkReceiver: public UIWidget {
 public:
     virtual void display();
-    NetworkReceiver(DataStorage* data):data_storage(data){};
+    NetworkReceiver(DataStorage* data);
+    ~NetworkReceiver();
 private:
     void update_data();
     std::string m_hostname;
@@ -18,6 +19,5 @@ private:
     bool m_wireles_enabled;
     int m_frame_time = 1.0f / 20.0f;
     NetworkManagerProxy m_network_proxy;
-    DataClient m_data_client;
-    DataStorage* data_storage;
+    DataClient* m_data_client;
 };
