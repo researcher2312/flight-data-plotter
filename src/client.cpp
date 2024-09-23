@@ -1,4 +1,5 @@
 #include <iostream>
+#include "data_storage.h"
 #include "client.h"
 
 
@@ -20,11 +21,17 @@ void AsyncServer::do_receive()
 
 void AsyncServer::handle_read()
 {
-    std::array<float, DATA_NUM> received_floats;
-    //std::memcpy(&received_value, data_.data(), sizeof(float));
-    std::memcpy(received_floats.data(), data_.data(), DATA_SIZE);
+    std::array<float, 3> acceleration;
+    std::array<float, 3> rotation;
+    std::array<float, 3> magnetic;
+    float time_frame = 0;
 
-    std::cerr << "Received float value: " << received_floats[0] << ' ' << received_floats[1] << std::endl;
+    std::memcpy(&time_frame, data_.data(), sizeof(float));
+    std::memcpy(acceleration.data(), data_.data()+2*sizeof(float), 3*sizeof(float));
+    std::memcpy(rotation.data(), data_.data()+5*sizeof(float), 3*sizeof(float));
+    std::memcpy(magnetic.data(), data_.data()+8*sizeof(float), 3*sizeof(float));
+
+    std::cerr << "Received float value: " << time_frame << std::endl;
 
     std::fill(data_.begin(), data_.end(), 0);
 }
