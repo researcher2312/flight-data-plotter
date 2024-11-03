@@ -18,6 +18,7 @@ set(SOURCES
     src/windows.cpp
     src/network_proxy.cpp
     src/data_storage.cpp
+    src/madgwick.cpp
     bindings/imgui_impl_sdl2.cpp
     bindings/imgui_impl_opengl3.cpp
 )

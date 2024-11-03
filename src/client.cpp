@@ -32,7 +32,6 @@ void AsyncServer::handle_read()
     std::memcpy(magnetic.data(), data_.data()+7*sizeof(float), 3*sizeof(float));
 
     data_storage->add_point(time_frame, acceleration, rotation, magnetic);
-    std::cerr << "Received float value: " << time_frame << std::endl;
 
     std::fill(data_.begin(), data_.end(), 0);
 }
