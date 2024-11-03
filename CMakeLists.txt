@@ -7,6 +7,7 @@ find_package(imgui REQUIRED)
 find_package(SDL2 REQUIRED)
 find_package(sdbus-c++ REQUIRED)
 find_package(asio REQUIRED)
+find_package(Eigen3 REQUIRED)
 
 set(SOURCES
     src/main.cpp
@@ -19,6 +20,7 @@ set(SOURCES
     src/network_proxy.cpp
     src/data_storage.cpp
     src/madgwick.cpp
+    src/kalman.cpp
     bindings/imgui_impl_sdl2.cpp
     bindings/imgui_impl_opengl3.cpp
 )
@@ -26,7 +28,7 @@ set(SOURCES
 add_executable(${PROJECT_NAME} ${SOURCES})
 target_compile_features(${PROJECT_NAME} PRIVATE cxx_std_17)
 
-target_link_libraries(${PROJECT_NAME} PRIVATE implot::implot imgui::imgui SDL2::SDL2main SDBusCpp::sdbus-c++ asio::asio)
+target_link_libraries(${PROJECT_NAME} PRIVATE implot::implot imgui::imgui SDL2::SDL2main SDBusCpp::sdbus-c++ asio::asio Eigen3::Eigen)
 target_include_directories(${PROJECT_NAME} PRIVATE ${CONAN_LIBS})
 
 target_include_directories(${PROJECT_NAME}

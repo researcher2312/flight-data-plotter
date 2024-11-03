@@ -1,3 +1,4 @@
+#include "Eigen/Dense"
 #include "data_storage.h"
 #include "madgwick.h"
 
@@ -11,6 +12,14 @@ void DataStorage::add_point(float time,
         rotation.at(i).AddPoint(time, _rotation.at(i));
         magnetic.at(i).AddPoint(time, _magnetic.at(i));
     }
+    Vector3d gyro(deg_to_rad(_rotation.at(0)),
+                  deg_to_rad(_rotation.at(1)),
+                  deg_to_rad(_rotation.at(2)));   //gyroscope data (in rad/s)
+    Vector3d accel(_acceleration.at(0), _acceleration.at(1), _acceleration.at(2));           //accelerometer data (gravity vector)
+
+    kalman_filter.predict(gyro, 0.02);
+    kalman_filter.update(accel);
+
     MadgwickAHRSupdate(_rotation.at(0),
                        _rotation.at(1),
                        _rotation.at(2),
