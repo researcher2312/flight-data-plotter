@@ -7,6 +7,10 @@ void DataStorage::add_point(float time,
                             std::array<float, 3> _rotation,
                             std::array<float, 3> _magnetic)
 {
+    //magnetometer y and z are reversed
+    _magnetic.at(1) *= -1;
+    _magnetic.at(2) *= -1;
+
     for (int i=0; i<3; ++i) {
         acceleration.at(i).AddPoint(time, _acceleration.at(i));
         rotation.at(i).AddPoint(time, _rotation.at(i));
@@ -16,9 +20,10 @@ void DataStorage::add_point(float time,
                   deg_to_rad(_rotation.at(1)),
                   deg_to_rad(_rotation.at(2)));   //gyroscope data (in rad/s)
     Vector3d accel(_acceleration.at(0), _acceleration.at(1), _acceleration.at(2));           //accelerometer data (gravity vector)
+    Vector3d magnet(_magnetic.at(0), _magnetic.at(1), _magnetic.at(2));
 
     kalman_filter.predict(gyro, 0.02);
-    kalman_filter.update(accel);
+    kalman_filter.update(accel, magnet);
 
     MadgwickAHRSupdate(_rotation.at(0),
                        _rotation.at(1),

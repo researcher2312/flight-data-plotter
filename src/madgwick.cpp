@@ -202,7 +202,6 @@ void MadgwickAHRSupdate(float gx, float gy, float gz, float ax, float ay, float 
 		std::cerr << "accelerometer data invalid\n";
 	}
 
-	std::cerr << std::format("a0 = {:.2} | a1 = {:.2} | a2 = {:.2} | q0 = {}\n", ax, ay, az, q0);
 	// Integrate rate of change of quaternion to yield quaternion
 	q0 += qDot1 * (1.0f / sampleFreq);
 	q1 += qDot2 * (1.0f / sampleFreq);

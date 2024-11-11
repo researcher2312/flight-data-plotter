@@ -50,7 +50,7 @@ public:
     std::array<ScrollingBuffer, 3> acceleration;
     std::array<ScrollingBuffer, 3> rotation;
     std::array<ScrollingBuffer, 3> magnetic;
-    KalmanFilter kalman_filter;
+    ExtendedKalmanFilter kalman_filter;
 private:
     std::mt19937_64 generator = std::mt19937_64{std::random_device{}()};
     std::uniform_real_distribution<float> distribution = std::uniform_real_distribution<float>(0,5);
