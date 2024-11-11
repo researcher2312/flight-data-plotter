@@ -165,7 +165,7 @@ void ExtendedKalmanFilter::update(const Vector3d &accel, const Vector3d &magnet)
     P = (Matrix4d::Identity() - K * H) * P;
 }
 
-void KalmanFilter::getEulerAngles(float &roll, float &pitch, float &yaw) const
+void KalmanFilter::get_euler_angles(float &roll, float &pitch, float &yaw) const
 {
     // Extract quaternion components
     double q0 = q(0);
@@ -191,7 +191,7 @@ void KalmanFilter::getEulerAngles(float &roll, float &pitch, float &yaw) const
     roll *= (180.0f / std::numbers::pi);
 }
 
-void ExtendedKalmanFilter::getEulerAngles(float &roll, float &pitch, float &yaw) const {
+void ExtendedKalmanFilter::get_euler_angles(float &roll, float &pitch, float &yaw) const {
         double q0 = q(0);
         double q1 = q(1);
         double q2 = q(2);
@@ -207,25 +207,11 @@ void ExtendedKalmanFilter::getEulerAngles(float &roll, float &pitch, float &yaw)
         yaw = atan2(2.0 * (q0 * q3 + q1 * q2), 1.0 - 2.0 * (q2 * q2 + q3 * q3)) * (180.0 / std::numbers::pi);
     }
 
-// Example usage
+    void ExtendedKalmanFilter::get_quaternion(float& q0, float& q1, float& q2, float& q3) const
+    {
+        q0 = q(0);
+        q1 = q(1);
+        q2 = q(2);
+        q3 = q(3);
+    }
 
-// int main() {
-//     KalmanFilter kf;
-
-//     // Simulate a gyroscope measurement (angular velocities) and accelerometer measurement (gravity direction)
-//     Vector3d gyro(0.01, 0.02, 0.015);  // Example gyroscope data (in rad/s)
-//     Vector3d accel(0, 0, -1);           // Example accelerometer data (gravity vector)
-
-//     double dt = 0.01; // Time step in seconds
-
-//     // Prediction step
-//     kf.predict(gyro, dt);
-
-//     // Update step
-//     kf.update(accel);
-
-//     // Output the estimated quaternion
-//     std::cout << "Estimated quaternion: " << kf.q.transpose() << std::endl;
-
-//     return 0;
-// }

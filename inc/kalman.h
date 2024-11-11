@@ -15,7 +15,7 @@ public:
     KalmanFilter();
     void predict(const Vector3d &gyro, double dt);
     void update(const Vector3d &accel);
-    void getEulerAngles(float &roll, float &pitch, float &yaw) const;
+    void get_euler_angles(float &roll, float &pitch, float &yaw) const;
 };
 
 class ExtendedKalmanFilter {
@@ -28,5 +28,6 @@ public:
     ExtendedKalmanFilter();
     void predict(const Vector3d &gyro, double dt);
     void update(const Vector3d &accel, const Vector3d &magnet);
-    void getEulerAngles(float &roll, float &pitch, float &yaw) const;
+    void get_euler_angles(float &roll, float &pitch, float &yaw) const;
+    void get_quaternion(float& q0, float& q1, float& q2, float& q3) const;
 };
