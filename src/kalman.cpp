@@ -36,7 +36,7 @@ ExtendedKalmanFilter::ExtendedKalmanFilter() {
     P = 0.01 *  Matrix4d::Identity();
 
     // Set process noise covariance Q
-    Q = 0.01 * Matrix4d::Identity();
+    Q = 0.1 * Matrix4d::Identity();
 
     // Set measurement noise covariance R (for accelerometer and magnetometer)
     R = Matrix<double, 6, 6>::Identity();
@@ -214,4 +214,13 @@ void ExtendedKalmanFilter::get_euler_angles(float &roll, float &pitch, float &ya
         q2 = q(2);
         q3 = q(3);
     }
+
+void ExtendedKalmanFilter::get_deviation(float& q0, float& q1, float& q2, float& q3) const
+{
+    q0 = std::sqrt(P(0, 0));  // Standard deviation for q0
+    q1 = std::sqrt(P(1, 1));  // Standard deviation for q1
+    q2 = std::sqrt(P(2, 2));  // Standard deviation for q2
+    q3 = std::sqrt(P(3, 3));  // Standard deviation for q3
+}
+
 

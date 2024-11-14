@@ -39,7 +39,6 @@ void AsyncServer::handle_read()
 DataClient::DataClient(DataStorage* data_storage)
 {
     server.data_storage = data_storage;
-    std::cerr << "Server started. Waiting for incoming connections..." << std::endl;
     try {
         std::thread io_thread([&]() {
             io_context.run();

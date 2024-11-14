@@ -34,6 +34,7 @@ void DataStorage::add_point(float time,
                        _magnetic.at(0),
                        _magnetic.at(1),
                        _magnetic.at(2));
+    acceleration_norm = accel.norm();
 }
 
 void DataStorage::generate_random_data()
